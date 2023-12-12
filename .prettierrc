@@ -1,4 +1,9 @@
 {
   "semi": false,
-  "singleQuote": true
+  "singleQuote": true,
+  "formatter.printWidth": 80,
+  "formatter.tabWidth": 2,
+  "formatter.useTabs": false,
+  "stylelintIntegration": true,
+  "colorSupport": true
 }
