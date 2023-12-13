@@ -1,28 +1,67 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+//
+// npx prisma format 
+// npx prisma db push
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
+enum JOURNAL_ENTRY_STATUS {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
 model User {
-  id        String         @id @default(uuid())
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
-  email     String         @unique
-  clerkId   String         @unique
+  id        String          @id @default(uuid())
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  email     String          @unique
+  clerkId   String          @unique
+  entries   JournalEntry[]
   name      String?
+  Analysis  EntryAnalysis[]
 }
 
 model JournalEntry {
+  id        String               @id @default(uuid())
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+  userId    String
+  user      User                 @relation(fields: [userId], references: [id])
+  content   String               @db.Text
+  status    JOURNAL_ENTRY_STATUS @default(DRAFT)
+  analysis  EntryAnalysis?
+
+  @@unique([userId, id])
+}
+
+model EntryAnalysis {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  content String               @db.Text
+
+  entryId String
+  entry   JournalEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  mood           String  @db.Text
+  subject        String  @db.Text
+  negative       Boolean
+  summary        String  @db.Text
+  color          String  @default("#0101fe")
+  sentimentScore Float
+
+  @@unique([entryId])
+  @@index([userId])
 }
