@@ -3,6 +3,12 @@
 //
 // npx prisma format 
 // npx prisma db push
+// npx prisma studio
+// pscale auth login
+// pscale branch create moodtracker dev
+// pscale connect moodtracker dev --port 3309
+// pscale org list
+// mpm run dev
 
 generator client {
   provider = "prisma-client-js"
